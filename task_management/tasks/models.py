@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Task(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, db_index=True) # Adding an index to the title field
     description = models.TextField()
     assigned_to = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.CharField(max_length=50, choices=[('Pending', 'Pending'), ('In Progress', 'In Progress'), ('Completed', 'Completed')])
