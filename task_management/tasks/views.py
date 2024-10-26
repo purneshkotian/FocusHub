@@ -7,12 +7,8 @@ import json
 
 # Initialize the Kafka producer
 producer = KafkaProducer(
-    bootstrap_servers='kafka:9092',
-    api_version=(0,11,5),
-    value_serializer=lambda v: json.dumps(v).encode('utf-8'),
-    #adding timeouts since zookeeper takes time to load
-    request_timeout_ms=20000,
-    retries=5,
+    bootstrap_servers='localhost:9092',
+    value_serializer=lambda v: json.dumps(v).encode('utf-8')
 )
 
 class TaskViewSet(viewsets.ModelViewSet):
