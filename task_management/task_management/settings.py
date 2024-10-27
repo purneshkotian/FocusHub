@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_freamework',
+    'rest_framework',
     'tasks',
 ]
 
@@ -52,8 +52,8 @@ MIDDLEWARE = [
 ]
 
 #Celery Conf
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 
 ROOT_URLCONF = 'task_management.urls'
 
@@ -85,7 +85,7 @@ DATABASES = {
         'NAME': 'task_management_db',
         'USER': 'admin',
         'PASSWORD': 'admin',
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }
