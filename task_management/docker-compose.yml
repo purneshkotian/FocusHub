@@ -3,6 +3,7 @@ version: "3.8"
 services:
   web:
     build: .
+    command: sh -c "sleep 30 && python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
     volumes:
@@ -12,6 +13,8 @@ services:
       - redis
       - kafka
     restart: always
+    networks:
+      - task_network
 
   db:
     image: postgres:13
@@ -20,10 +23,14 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
     restart: always
+    networks:
+      - task_network
 
   redis:
     image: redis:latest
     restart: always
+    networks:
+      - task_network
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
@@ -33,6 +40,8 @@ services:
     ports:
       - "2181:2181"
     restart: always
+    networks:
+      - task_network
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -50,6 +59,8 @@ services:
     depends_on:
       - zookeeper
     restart: always
+    networks:
+      - task_network
 
   celery:
     build: .
@@ -57,3 +68,9 @@ services:
     depends_on:
       - kafka
     restart: always
+    networks:
+      - task_network
+
+networks:
+  task_network:
+    driver: bridge

@@ -4,7 +4,12 @@ import axios from "../services/api";
 import Navbar from "../components/NavBar";
 
 const CreateTask = () => {
-  const [task, setTask] = useState({ title: "", description: "" });
+  const [task, setTask] = useState({
+    title: "",
+    description: "",
+    assigned_to: "1",
+    status: "Pending",
+  });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
