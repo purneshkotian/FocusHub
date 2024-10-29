@@ -20,15 +20,28 @@ class TaskViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             new_task = serializer.save()  # This saves the task to the database
-            
-            # Sending task creation event to Kafka topic
-            producer.send('task_updates', {
-                'task_id': new_task.id,
-                'title': new_task.title,
-                'status': new_task.status,
-                'event': 'Task Created'
-            })
+            # Attempt to send the task creation event to Kafka
+            try:
+                producer.send('task_notifications', {'task_id': new_task.id})
+            except Exception as e:
+                # Return a 500 response if Kafka fails
+                return Response({'error': f'Kafka error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+            # If Kafka send is successful, return the serialized task data
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
+            # Return 400 response if serializer validation fails
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            # try:
+            #     # producer.send('task_notifications', json.dumps({'task_id': new_task.id}).encode('utf-8'))
+            #     # Sending task creation event to Kafka topic
+            #     producer.send('task_updates', {
+            #         'task_id': new_task.id,
+            #         'title': new_task.title,
+            #         'status': new_task.status,
+            #         'event': 'Task Created'
+            #     })
+            # except Exception as e:
+            #     return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
